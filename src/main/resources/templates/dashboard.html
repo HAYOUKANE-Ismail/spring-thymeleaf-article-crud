@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Article Manager</title>
+    <link th:href="@{/webjars/bootstrap/4.6.1/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Load JavaScript libraries in proper order -->
+    <script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.6.1/js/bootstrap.min.js}"></script>
+    <!-- Chart.js from WebJar - Updated version and path -->
+    <script th:src="@{/webjars/chartjs/3.9.1/dist/chart.min.js}"></script>
+
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .dashboard-container {
+            padding: 2rem 0;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+        }
+
+        .dashboard-title {
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-subtitle {
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+            margin: 0.5rem 0 0 0;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-actions {
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .download-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Statistics Cards */
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon.total {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-icon.stock {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .stat-icon.value {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        .stat-icon.low {
+            background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #212529;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-weight: 600;
+            margin: 0.5rem 0 0 0;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .stat-change.positive {
+            color: #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+
+        .stat-change.negative {
+            color: #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+        }
+
+        .chart-title {
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 2rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .chart-title i {
+            margin-right: 0.75rem;
+            color: #667eea;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+        }
+
+        .chart-wrapper.small {
+            height: 280px;
+        }
+
+        .chart-wrapper.large {
+            height: 400px;
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #667eea;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .dashboard-subtitle {
+                font-size: 1rem;
+            }
+
+            .dashboard-actions {
+                margin-top: 1rem;
+            }
+
+            .download-btn {
+                display: block;
+                width: 100%;
+                margin: 0.5rem 0;
+                text-align: center;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="dashboard-container" id="dashboard-content">
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="dashboard-title">
+                        <i class="fa fa-chart-line mr-3"></i> Analytics Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">Comprehensive overview of your inventory statistics and trends</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="dashboard-actions text-md-right">
+                        <button class="download-btn" onclick="downloadPDF()">
+                            <i class="fa fa-download mr-2"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Statistics Cards -->
+        <div class="row mb-4" id="stats-cards">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon total">
+                        <i class="fa fa-cubes"></i>
+                    </div>
+                    <h3 class="stat-number" id="total-articles" th:text="${totalArticles ?: 0}">0</h3>
+                    <p class="stat-label">Total Articles</p>
+                    <p class="stat-change positive">
+                        <i class="fa fa-arrow-up mr-1"></i> +12% from last month
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon stock">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <h3 class="stat-number" id="in-stock" th:text="${inStockCount ?: 0}">0</h3>
+                    <p class="stat-label">In Stock</p>
+                    <p class="stat-change positive">
+                        <i class="fa fa-arrow-up mr-1"></i> 91% availability
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon value">
+                        <i class="fa fa-dollar-sign"></i>
+                    </div>
+                    <h3 class="stat-number" id="total-value">$<span th:text="${totalValue ?: '0.00'}">0.00</span></h3>
+                    <p class="stat-label">Total Inventory Value</p>
+                    <p class="stat-change positive">
+                        <i class="fa fa-arrow-up mr-1"></i> +8.5% growth
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <div class="stat-icon low">
+                        <i class="fa fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="stat-number" id="low-stock" th:text="${lowStockCount ?: 0}">0</h3>
+                    <p class="stat-label">Low Stock Items</p>
+                    <p class="stat-change negative">
+                        <i class="fa fa-arrow-down mr-1"></i> Needs attention
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="row">
+            <!-- Inventory Distribution Chart -->
+            <div class="col-lg-6 mb-4">
+                <div class="chart-container" id="inventory-chart-container">
+                    <h4 class="chart-title">
+                        <i class="fa fa-pie-chart"></i> Inventory Distribution
+                    </h4>
+                    <div class="chart-wrapper">
+                        <canvas id="inventoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Levels Chart -->
+            <div class="col-lg-6 mb-4">
+                <div class="chart-container" id="stock-chart-container">
+                    <h4 class="chart-title">
+                        <i class="fa fa-bar-chart"></i> Stock Levels by Category
+                    </h4>
+                    <div class="chart-wrapper">
+                        <canvas id="stockChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends Chart -->
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="chart-container" id="trends-chart-container">
+                    <h4 class="chart-title">
+                        <i class="fa fa-line-chart"></i> Monthly Inventory Trends
+                    </h4>
+                    <div class="chart-wrapper large">
+                        <canvas id="trendsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Price Analysis Chart -->
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="chart-container" id="price-chart-container">
+                    <h4 class="chart-title">
+                        <i class="fa fa-chart-area"></i> Price Distribution Analysis
+                    </h4>
+                    <div class="chart-wrapper">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="chart-container" id="status-chart-container">
+                    <h4 class="chart-title">
+                        <i class="fa fa-thermometer-half"></i> Stock Status
+                    </h4>
+                    <div class="chart-wrapper small">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<script>
+    $(document).ready(function() {
+        // Check if Chart.js is available immediately
+        if (typeof Chart !== 'undefined') {
+            initializeCharts();
+        } else {
+            // Try to load Chart.js manually as fallback
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js';
+            script.onload = function() {
+                waitForChart();
+            };
+            document.head.appendChild(script);
+        }
+
+        // Load dynamic data
+        loadDashboardData();
+    });
+
+    function waitForChart() {
+        if (typeof Chart !== 'undefined') {
+            initializeCharts();
+            return;
+        }
+        setTimeout(waitForChart, 200);
+    }
+
+    function initializeCharts() {
+        // Color scheme
+        const colors = ['#667eea', '#28a745', '#ffc107', '#dc3545', '#6f42c1'];
+        const mixedColors = ['#667eea', '#28a745', '#ffc107', '#dc3545', '#6f42c1'];
+
+        // 1. Inventory Distribution Pie Chart
+        const inventoryCtx = document.getElementById('inventoryChart');
+        if (inventoryCtx) {
+            new Chart(inventoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports'],
+                    datasets: [{
+                        data: [35, 25, 20, 12, 8],
+                        backgroundColor: mixedColors,
+                        borderWidth: 4,
+                        borderColor: '#ffffff',
+                        hoverBorderWidth: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 25,
+                                usePointStyle: true,
+                                font: {
+                                    family: 'Inter',
+                                    size: 13,
+                                    weight: '600'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Stock Levels Bar Chart
+        const stockCtx = document.getElementById('stockChart');
+        if (stockCtx) {
+            new Chart(stockCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports'],
+                    datasets: [{
+                        label: 'Stock Quantity',
+                        data: [45, 32, 28, 15, 12],
+                        backgroundColor: colors,
+                        borderRadius: 10,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(102, 126, 234, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 3. Monthly Trends Line Chart
+        const trendsCtx = document.getElementById('trendsChart');
+        if (trendsCtx) {
+            const gradient = trendsCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(102, 126, 234, 0.3)');
+            gradient.addColorStop(1, 'rgba(102, 126, 234, 0.05)');
+
+            new Chart(trendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Total Articles',
+                        data: [120, 125, 130, 128, 135, 142, 138, 145, 150, 148, 152, 156],
+                        borderColor: '#667eea',
+                        backgroundColor: gradient,
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#667eea',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 4,
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(102, 126, 234, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 4. Price Distribution Area Chart
+        const priceCtx = document.getElementById('priceChart');
+        if (priceCtx) {
+            const priceGradient = priceCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+            priceGradient.addColorStop(0, 'rgba(118, 75, 162, 0.3)');
+            priceGradient.addColorStop(1, 'rgba(118, 75, 162, 0.05)');
+
+            new Chart(priceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['$0-10', '$10-25', '$25-50', '$50-100', '$100-250', '$250-500', '$500+'],
+                    datasets: [{
+                        label: 'Number of Articles',
+                        data: [25, 35, 42, 38, 28, 15, 8],
+                        borderColor: '#764ba2',
+                        backgroundColor: priceGradient,
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#764ba2',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 4,
+                        pointRadius: 8,
+                        pointHoverRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(118, 75, 162, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    weight: '500'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 5. Stock Status Gauge Chart
+        const statusCtx = document.getElementById('statusChart');
+        if (statusCtx) {
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['In Stock', 'Low Stock', 'Out of Stock'],
+                    datasets: [{
+                        data: [142, 14, 0],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        borderWidth: 4,
+                        borderColor: '#ffffff',
+                        hoverBorderWidth: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    family: 'Inter',
+                                    size: 12,
+                                    weight: '600'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function loadDashboardData() {
+        $.ajax({
+            url: '/dashboard/stats',
+            type: 'GET',
+            dataType: 'json',
+            timeout: 10000,
+            success: function(data) {
+                // Update statistics cards
+                $('#total-articles').text(data.totalArticles || 0);
+                $('#in-stock').text(data.inStock || 0);
+                $('#total-value').html('$' + (data.totalValue || 0).toLocaleString());
+                $('#low-stock').text(data.lowStock || 0);
+            },
+            error: function(xhr, status, error) {
+                // Keep server-side rendered values
+            }
+        });
+    }
+
+    function downloadPDF() {
+        alert('PDF download functionality would generate a report with current dashboard statistics and charts.');
+    }
+</script>
+</body>
+</html>

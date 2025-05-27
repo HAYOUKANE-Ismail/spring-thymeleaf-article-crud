@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .footer-modern {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+            font-family: "Inter", sans-serif;
+        }
+
+        .footer-modern .social {
+            text-align: center;
+            padding-bottom: 2rem;
+        }
+
+        .footer-modern .social > a {
+            font-size: 1.5rem;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            display: inline-block;
+            text-align: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 0 0.5rem;
+            color: white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .footer-modern .social > a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            color: white;
+        }
+
+        .footer-modern ul {
+            padding: 0;
+            list-style: none;
+            text-align: center;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .footer-modern li {
+            padding: 0 1rem;
+        }
+
+        .footer-modern ul a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .footer-modern ul a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .footer-modern .copyright {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .footer-modern ul {
+                flex-direction: column;
+            }
+
+            .footer-modern li {
+                padding: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+
+<div th:fragment="footer" class="footer-modern">
+    <footer>
+        <div class="container">
+            <div class="social">
+                <a href="#" title="Instagram"><i class="fa fa-instagram"></i></a>
+                <a href="#" title="Twitter"><i class="fa fa-twitter"></i></a>
+                <a href="#" title="Facebook"><i class="fa fa-facebook"></i></a>
+                <a href="#" title="LinkedIn"><i class="fa fa-linkedin"></i></a>
+            </div>
+            <ul class="list-inline d-flex justify-content-center flex-wrap">
+                <li class="list-inline-item">
+                    <a th:href="@{/}">
+                        <i class="fa fa-home mr-1"></i>Home
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a th:href="@{/articles}">
+                        <i class="fa fa-cubes mr-1"></i>Articles
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#">
+                        <i class="fa fa-info-circle mr-1"></i>About
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#">
+                        <i class="fa fa-file-alt mr-1"></i>Terms
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#">
+                        <i class="fa fa-shield-alt mr-1"></i>Privacy Policy
+                    </a>
+                </li>
+            </ul>
+            <p class="copyright">
+                <i class="fa fa-copyright mr-1"></i> Article Manager © <span th:text="${#dates.year(#dates.createNow())}">2024</span> - All rights reserved
+            </p>
+        </div>
+    </footer>
+</div>
+</html>

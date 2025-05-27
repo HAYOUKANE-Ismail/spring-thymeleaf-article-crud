@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="welcome-container">
+    <!-- Welcome Section with Glass Morphism -->
+    <div class="container mt-4">
+        <div class="jumbotron jumbotron-modern shadow-hover">
+            <h1 class="display-4 text-contrast">
+                <i class="fa fa-cubes mr-3"></i> Welcome to Article Manager
+            </h1>
+            <p class="lead text-contrast-light">A comprehensive solution for managing your inventory with ease and style.</p>
+            <hr class="my-4">
+            <p class="text-contrast-light">Get started by exploring the articles or adding new items to your inventory with our modern interface.</p>
+            <div class="mt-4">
+                <a class="btn btn-glass-primary btn-lg" th:href="@{/articles}" role="button">
+                    <i class="fa fa-list mr-2"></i> View Articles
+                </a>
+                <a class="btn btn-glass-outline btn-lg" th:href="@{/articles/create}" role="button">
+                    <i class="fa fa-plus mr-2"></i> Add New Article
+                </a>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4 mb-4">
+                <div class="card card-feature shadow-hover">
+                    <div class="card-body">
+                        <div class="feature-icon search">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <h5 class="card-title text-contrast-light">Search Articles</h5>
+                        <p class="card-text text-contrast-light">Find articles quickly using our advanced search functionality with filters for price and quantity.</p>
+                        <a th:href="@{/articles/search}" class="btn btn-feature">
+                            <i class="fa fa-search mr-1"></i> Search Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card card-feature shadow-hover">
+                    <div class="card-body">
+                        <div class="feature-icon manage">
+                            <i class="fa fa-edit"></i>
+                        </div>
+                        <h5 class="card-title text-contrast-light">Manage Inventory</h5>
+                        <p class="card-text text-contrast-light">Add, edit, and remove articles from your inventory with our intuitive and modern interface.</p>
+                        <a th:href="@{/articles}" class="btn btn-feature">
+                            <i class="fa fa-tasks mr-1"></i> Manage Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card card-feature shadow-hover">
+                    <div class="card-body">
+                        <div class="feature-icon reports">
+                            <i class="fa fa-chart-bar"></i>
+                        </div>
+                        <h5 class="card-title text-contrast-light">View Reports</h5>
+                        <p class="card-text text-contrast-light">Generate reports and gain insights into your inventory data with visual analytics and charts.</p>
+                        <a th:href="@{/dashboard}" class="btn btn-feature">
+                            <i class="fa fa-chart-line mr-1"></i> View Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<style>
+    body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+    }
+
+    :root {
+        --emerald: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --cosmic: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        --aurora: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        --sunset: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        --glass-bg: rgba(255, 255, 255, 0.25);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+
+    .jumbotron-modern {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 25px;
+        box-shadow: var(--glass-shadow);
+        color: white;
+        padding: 3rem 2rem;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .jumbotron-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--emerald);
+    }
+
+    .jumbotron-modern h1 {
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        font-size: 3rem;
+    }
+
+    .jumbotron-modern .lead {
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 2rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        line-height: 1.6;
+    }
+
+    .jumbotron-modern hr {
+        border-color: rgba(255, 255, 255, 0.4);
+        margin: 2rem 0;
+        border-width: 2px;
+    }
+
+    .jumbotron-modern p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.2rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        line-height: 1.5;
+    }
+
+    .btn-glass-primary {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        color: white;
+        border-radius: 15px;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0.5rem;
+        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        text-shadow: none;
+    }
+
+    .btn-glass-primary:hover {
+        background: linear-gradient(135deg, #0d8378 0%, #2dd865 100%);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(17, 153, 142, 0.4);
+        text-decoration: none;
+    }
+
+    .btn-glass-outline {
+        background: transparent;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        color: white;
+        border-radius: 15px;
+        padding: 1rem 2.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        margin: 0.5rem;
+        text-shadow: none;
+    }
+
+    .btn-glass-outline:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        transform: translateY(-3px);
+        text-decoration: none;
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .card-feature {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        box-shadow: var(--glass-shadow);
+        transition: all 0.4s ease;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .card-feature:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-feature .card-body {
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+        position: relative;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .feature-icon.search {
+        background: var(--emerald);
+        box-shadow: 0 10px 30px rgba(17, 153, 142, 0.3);
+    }
+
+    .feature-icon.manage {
+        background: var(--cosmic);
+        box-shadow: 0 10px 30px rgba(250, 112, 154, 0.3);
+        animation-delay: -1s;
+    }
+
+    .feature-icon.reports {
+        background: var(--aurora);
+        box-shadow: 0 10px 30px rgba(168, 237, 234, 0.3);
+        animation-delay: -2s;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .card-feature h5 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: white;
+        font-size: 1.3rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-feature p {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        font-size: 1rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-feature {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        border-radius: 12px;
+        padding: 0.8rem 1.8rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 1rem;
+    }
+
+    .btn-feature:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .shadow-hover {
+        transition: all 0.3s ease;
+    }
+
+    .shadow-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-contrast {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .text-contrast-light {
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+</style>
+</body>
+</html>

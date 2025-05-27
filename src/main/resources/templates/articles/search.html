@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head">
+    <title>Search Articles - Article Manager</title>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+
+<div class="search-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card card-modern shadow-hover">
+                    <div class="card-header card-header-gradient text-center">
+                        <div class="search-icon">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <h3 class="mb-0">Advanced Article Search</h3>
+                        <p class="mb-0 mt-2" style="opacity: 0.9;">Find exactly what you're looking for</p>
+                    </div>
+                    <div class="card-body card-body-modern">
+                        <form th:action="@{/articles/search}" method="post">
+                            <div class="form-group">
+                                <label for="description"><i class="fa fa-file-text mr-2"></i>Article Description</label>
+                                <input type="text" class="form-control form-control-modern" id="description" name="description" placeholder="Enter keywords to search for articles...">
+                            </div>
+
+                            <hr class="section-divider">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5 class="mb-3">
+                                        <i class="fa fa-tag mr-2 text-success"></i> Price Range
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="minPrice">Minimum Price</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fa fa-dollar-sign"></i></span>
+                                                    </div>
+                                                    <input type="number" step="0.01" class="form-control form-control-modern" id="minPrice" name="minPrice" placeholder="0.00">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="maxPrice">Maximum Price</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fa fa-dollar-sign"></i></span>
+                                                    </div>
+                                                    <input type="number" step="0.01" class="form-control form-control-modern" id="maxPrice" name="maxPrice" placeholder="1000.00">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5 class="mb-3">
+                                        <i class="fa fa-cubes mr-2 text-info"></i> Quantity Range
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="minQuantity">Minimum Quantity</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fa fa-boxes"></i></span>
+                                                    </div>
+                                                    <input type="number" step="1" class="form-control form-control-modern" id="minQuantity" name="minQuantity" placeholder="0">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="maxQuantity">Maximum Quantity</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fa fa-boxes"></i></span>
+                                                    </div>
+                                                    <input type="number" step="1" class="form-control form-control-modern" id="maxQuantity" name="maxQuantity" placeholder="1000">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="section-divider">
+
+                            <div class="form-group mt-4 text-center">
+                                <a th:href="@{/articles}" class="btn btn-secondary-modern mr-3">
+                                    <i class="fa fa-arrow-left mr-2"></i>Back to Articles
+                                </a>
+                                <button type="submit" class="btn btn-search">
+                                    <i class="fa fa-search mr-2"></i>Search Articles
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<style>
+    :root {
+        --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --success: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        --info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+    }
+
+    .search-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 200px);
+    }
+
+    .card-modern {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        animation: slideInUp 0.6s ease-out;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card-header-gradient {
+        background: var(--info);
+        color: white;
+        padding: 2rem;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header-gradient::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+    }
+
+    .card-header-gradient h3 {
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        font-weight: 700;
+        font-size: 1.8rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body-modern {
+        background: white;
+        padding: 2.5rem;
+    }
+
+    .form-control-modern {
+        background: white;
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        color: #2c3e50;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .form-control-modern:focus {
+        background: white;
+        border-color: #4facfe;
+        box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+        color: #2c3e50;
+    }
+
+    .form-group label {
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .form-group h5 {
+        color: #34495e;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        color: #6c757d;
+        border-radius: 15px 0 0 15px;
+        font-weight: 600;
+        border-right: none;
+    }
+
+    .input-group .form-control-modern {
+        border-radius: 0 15px 15px 0;
+        border-left: none;
+    }
+
+    .input-group .form-control-modern:focus {
+        border-left: none;
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: #4facfe;
+        background: rgba(79, 172, 254, 0.1);
+        color: #4facfe;
+    }
+
+    .btn-search {
+        background: var(--success);
+        border: none;
+        color: white;
+        padding: 0.75rem 2.5rem;
+        border-radius: 15px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(86, 171, 47, 0.3);
+    }
+
+    .btn-search:hover {
+        background: linear-gradient(135deg, #4a934a 0%, #8bc34a 100%);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(86, 171, 47, 0.4);
+    }
+
+    .btn-secondary-modern {
+        background: white;
+        border: 2px solid #6c757d;
+        color: #6c757d;
+        padding: 0.75rem 2rem;
+        border-radius: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-secondary-modern:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+        box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    .section-divider {
+        border: none;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.3), transparent);
+        margin: 2rem 0;
+    }
+
+    .search-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--info);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .shadow-hover {
+        transition: all 0.4s ease;
+    }
+
+    .shadow-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-group.mt-4 {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        border: 2px solid #f8f9fa;
+        margin-top: 2rem !important;
+    }
+
+    .card-body-modern {
+        border: 1px solid #e9ecef;
+    }
+</style>
+</body>
+</html>
